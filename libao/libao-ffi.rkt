@@ -2,6 +2,7 @@
 
 (require ffi/unsafe
          ffi/unsafe/define
+         setup/dirs
          )
 
 (provide ;_libao_pointer
@@ -15,10 +16,22 @@
          ao_shutdown
          ao_append_option
          make-ao_sample_format
+         ao_sample_format-bits
+         ao_sample_format-rate
+         ao_sample_format-channels
+         ao_sample_format-byte_format
+         ao_sample_format-matrix
          (all-from-out ffi/unsafe)
          )
 
-(define-ffi-definer define-libao (ffi-lib "libao" '("3" "4" "5" #f)))
+
+(define-ffi-definer define-libao
+  (ffi-lib "libao" '("3" "4" "5" #f)
+           #:get-lib-dirs (lambda ()
+                            (cons (build-path ".") (get-lib-search-dirs)))
+           #:fail (lambda ()
+                    (ffi-lib (get-lib-path "libao-4.dll")))
+           ))
 
 
 (define _libao-pointer (_cpointer 'ao_device))
@@ -50,7 +63,7 @@
 (define-libao ao_open_live (_fun _int _pointer _pointer -> _libao-pointer)) 
 
 ; int ao_play(ao_device *device, char *output_samples, uint_32 num_bytes);
-(define-libao ao_play (_fun _libao-pointer _pointer _ulong -> _int))
+(define-libao ao_play (_fun _libao-pointer _pointer _uint32 -> _int))
 
 ; int ao_close(ao_device *device);
 (define-libao ao_close (_fun _libao-pointer -> _int))
