@@ -1,4 +1,3 @@
-;#lang racket/base
 (module libflac-ffi racket/base
   
 (require ffi/unsafe

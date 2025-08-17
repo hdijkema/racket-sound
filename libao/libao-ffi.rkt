@@ -3,6 +3,7 @@
 (require ffi/unsafe
          ffi/unsafe/define
          setup/dirs
+         "../utils/utils.rkt"
          )
 
 (provide ;_libao_pointer
